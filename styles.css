@@ -102,20 +102,32 @@ input, textarea { max-width: 100%; }
 .section-head p { font-size: 17px; color: var(--ink-soft); }
 
 /* ============ Scroll Reveal Animations ============ */
+/* Visible by default — this is the no-JS / JS-failed / JS-still-loading state.
+   The animated hidden state only applies once documentElement has the "js"
+   class, which script.js adds immediately on load. This means content can
+   never get stuck invisible if a script errors, is blocked, or loads slowly. */
 .reveal-up,
 .reveal-left,
 .reveal-right,
 .reveal-fade {
+  opacity: 1;
+  transform: none;
+}
+
+.js .reveal-up,
+.js .reveal-left,
+.js .reveal-right,
+.js .reveal-fade {
   opacity: 0;
   transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1) var(--delay, 0s),
               transform 0.7s cubic-bezier(0.4,0,0.2,1) var(--delay, 0s);
   will-change: transform, opacity;
 }
 
-.reveal-up    { transform: translateY(40px); }
-.reveal-left  { transform: translateX(-40px); }
-.reveal-right { transform: translateX(40px); }
-.reveal-fade  { transform: scale(0.97); }
+.js .reveal-up    { transform: translateY(40px); }
+.js .reveal-left  { transform: translateX(-40px); }
+.js .reveal-right { transform: translateX(40px); }
+.js .reveal-fade  { transform: scale(0.97); }
 
 .reveal-up.in-view,
 .reveal-left.in-view,
@@ -1268,8 +1280,10 @@ footer {
 /* ============ Floating WhatsApp Button ============ */
 .whatsapp-float {
   position: fixed;
-  bottom: 28px;
-  right: 28px;
+  /* Adds the iPhone home-indicator / gesture-bar height on top of the base
+     offset, so the button never sits under it on notched phones. */
+  bottom: calc(28px + env(safe-area-inset-bottom));
+  right: calc(28px + env(safe-area-inset-right));
   z-index: 200;
   display: flex;
   align-items: center;
@@ -1501,8 +1515,8 @@ footer {
 
   /* Floating WA button */
   .whatsapp-float {
-    bottom: 20px;
-    right: 16px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    right: calc(16px + env(safe-area-inset-right));
     padding: 13px 16px;
     font-size: 13px;
   }
@@ -1605,7 +1619,11 @@ footer {
   .contact-detail { font-size: 12.5px; }
 
   /* Floating WA */
-  .whatsapp-float { bottom: 16px; right: 12px; padding: 12px 14px; }
+  .whatsapp-float {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    right: calc(12px + env(safe-area-inset-right));
+    padding: 12px 14px;
+  }
 
   /* Footer */
   .footer-top { padding: 36px 0 24px; }
@@ -1898,10 +1916,10 @@ section { transition: background 0.5s ease; }
   background-clip: text;
 }
 
-/* ---- Smooth scroll-reveal with 3D depth ---- */
-.reveal-up   { transform: translateY(48px) scale(0.98); }
-.reveal-left  { transform: translateX(-48px) scale(0.98); }
-.reveal-right { transform: translateX(48px) scale(0.98); }
+/* ---- Smooth scroll-reveal with 3D depth (JS-enabled only, see top of file) ---- */
+.js .reveal-up   { transform: translateY(48px) scale(0.98); }
+.js .reveal-left  { transform: translateX(-48px) scale(0.98); }
+.js .reveal-right { transform: translateX(48px) scale(0.98); }
 
 .reveal-up.in-view,
 .reveal-left.in-view,

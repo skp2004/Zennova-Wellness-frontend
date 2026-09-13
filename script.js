@@ -494,16 +494,28 @@ function initHeroScrollParallax() {
 }
 
 /* ============ Boot ============ */
+/* Each feature is isolated: if one throws (e.g. a page missing one section),
+   it's logged and skipped instead of aborting every feature after it in the
+   list. Without this, one bug could silently disable the FAQ, the mobile
+   menu, or product loading depending on script order. */
+function safeInit(name, fn) {
+  try {
+    fn();
+  } catch (err) {
+    console.error(`Zennova Wellness: "${name}" failed to initialize`, err);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  loadProducts();
-  initFAQ();
-  initReveal();
-  initStickyHeader();
-  initMobileMenu();
-  initNavHighlight();
-  initHeroCarousel();
-  initHeroScrollParallax();
-  initRipple();
-  initSectionHeadReveal();
-  initCardTilt();
+  safeInit("loadProducts", loadProducts);
+  safeInit("initFAQ", initFAQ);
+  safeInit("initReveal", initReveal);
+  safeInit("initStickyHeader", initStickyHeader);
+  safeInit("initMobileMenu", initMobileMenu);
+  safeInit("initNavHighlight", initNavHighlight);
+  safeInit("initHeroCarousel", initHeroCarousel);
+  safeInit("initHeroScrollParallax", initHeroScrollParallax);
+  safeInit("initRipple", initRipple);
+  safeInit("initSectionHeadReveal", initSectionHeadReveal);
+  safeInit("initCardTilt", initCardTilt);
 });
